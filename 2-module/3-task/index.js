@@ -1,9 +1,9 @@
 let calculator = {
   // ваш код
-
+  
   read(x, y) {
     typeof x === 'number' ? this.a = x : console.log('Not a number');
-    typeof y === 'number' ? this.b = y: console.log('Not a number');
+    typeof y === 'number' ? this.b = y : console.log('Not a number');
   },
 
   sum() {
