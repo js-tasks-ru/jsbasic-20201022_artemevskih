@@ -13,9 +13,7 @@ function getMinMax(str) {
   str.split(' ')
     .join()
     .split(',')
-    .map(function(item) {
-      +item > result.max ? result.max = +item : +item < result.min ? result.min = +item : item;
-    });
+    .map(item => +item > result.max ? result.max = +item : +item < result.min ? result.min = +item : item);
 
   return result;
 }
