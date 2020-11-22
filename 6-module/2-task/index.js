@@ -9,6 +9,7 @@ export default class ProductCard {
     this.image = product.image;
     this.id = product.id;
     this.render();
+    this.onClick();
   }
   returnCardHTML() {
     return `
@@ -27,8 +28,9 @@ export default class ProductCard {
     this.elem = document.createElement('DIV');
     this.elem.classList.add('card');
     this.elem.innerHTML = this.returnCardHTML();
-
-    let productAdd = new CustomEvent('product-add', { 
+  }
+  onClick() {
+    const productAdd = new CustomEvent('product-add', { 
       detail: this.id, 
       bubbles: true,
     });
