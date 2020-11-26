@@ -51,28 +51,18 @@ export default class RibbonMenu {
 
     this.elem.addEventListener('click', evt => {
       if (evt.target
-            .classList.contains('ribbon__arrow_right') 
-
-          || 
-
+            .classList.contains('ribbon__arrow_right') || 
           evt.target
             .parentElement.classList
             .contains('ribbon__arrow_right')) {
-
         nav.scrollBy( 350, 0 );
-
       };
       if (evt.target
-            .classList.contains('ribbon__arrow_left') 
-            
-          || 
-          
+            .classList.contains('ribbon__arrow_left') || 
           evt.target
             .parentElement.classList
             .contains('ribbon__arrow_left')) {
-
         nav.scrollBy( -350 , 0 );
-
       };
     });
   }
