@@ -12,7 +12,7 @@ export default class RibbonMenu {
     if (!this.elem) this.elem = document.createElement('div');
     this.elem.classList.add('ribbon');
 
-    this.elem.append(this.createArrow('left', true));
+    this.elem.append(this.createArrow('left'));
     this.elem.append(this.createNav(this.categories));
     this.elem.append(this.createArrow('right', true));
 
@@ -29,9 +29,24 @@ export default class RibbonMenu {
       link.classList.add('ribbon__item');
       index === 0 ? link.classList.add('ribbon__item_active') : false;
       link.dataset.id = element.id;
-      link.innerHTML = element.name;
+      link.innerHTML = element.name;      
 
       nav.append(link);
+    });
+
+    const allItems = nav.querySelectorAll('.ribbon__item');
+
+    nav.addEventListener('click', (evt) => {
+      evt.preventDefault();
+
+      allItems.forEach(item => {
+        item.classList.remove('ribbon__item_active');
+      });
+
+      if (evt.target.classList.contains('ribbon__item')) {
+        evt.target.dispatchEvent(this.createCustomEvent(evt.target));
+        evt.target.classList.add('ribbon__item_active');
+      };
     });
     
     return nav;
@@ -42,28 +57,47 @@ export default class RibbonMenu {
     arrow.classList.add('ribbon__arrow', 'ribbon__arrow_' + direction);
     visible ? arrow.classList.add('ribbon__arrow_visible') : false;
 
-    arrow.innerHTML = `<img src="/assets/images/icons/angle-icon.svg" alt="icon">`;
+    arrow.innerHTML = `<img src="../../assets/images/icons/angle-icon.svg" alt="icon">`;
 
     return arrow;
   }
   move() {
     const nav = document.querySelector('.ribbon__inner');
+    const rightArrow = this.elem.querySelector('.ribbon__arrow_right');
+    const leftArrow = this.elem.querySelector('.ribbon__arrow_left');    
 
-    this.elem.addEventListener('click', evt => {
-      if (evt.target
-            .classList.contains('ribbon__arrow_right') || 
-          evt.target
-            .parentElement.classList
-            .contains('ribbon__arrow_right')) {
-        nav.scrollBy( 350, 0 );
-      };
-      if (evt.target
-            .classList.contains('ribbon__arrow_left') || 
-          evt.target
-            .parentElement.classList
-            .contains('ribbon__arrow_left')) {
-        nav.scrollBy( -350 , 0 );
-      };
+    rightArrow.addEventListener('click', () => {
+      nav.scrollBy(350, 0);           
     });
+
+    leftArrow.addEventListener('click', () => {
+      nav.scrollBy(-350, 0);
+    });
+
+    nav.addEventListener('scroll', () => {
+      let scrollRight = nav.scrollWidth - nav.scrollLeft - nav.clientWidth;
+
+      if (scrollRight === 0) {
+        rightArrow.classList.remove('ribbon__arrow_visible');
+        rightArrow.removeEventListener('click', () => {});
+      } else {
+        rightArrow.classList.add('ribbon__arrow_visible');
+      }
+
+      if (nav.scrollLeft > 0) {
+        leftArrow.classList.add('ribbon__arrow_visible');        
+      } else {
+        leftArrow.classList.remove('ribbon__arrow_visible');
+        leftArrow.removeEventListener('click', () => {});
+      }
+    });
+  }
+  createCustomEvent(category) {
+    const customEvent = new CustomEvent('ribbon-select', {
+      detail: category.dataset.id,
+      bubles: true,
+    });
+
+    return customEvent;
   }
 }
