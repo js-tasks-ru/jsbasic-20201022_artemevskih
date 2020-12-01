@@ -3,20 +3,17 @@ import createElement from '../../assets/lib/create-element.js';
 export default class RibbonMenu {
   constructor(categories) {
     this.categories = categories;
-    this.render();
-    this.move();
-  }
-  render() {
-    const container = document.querySelector('.container');
     
+    this.render();
+    this.move();    
+  }
+  render() {    
     if (!this.elem) this.elem = document.createElement('div');
     this.elem.classList.add('ribbon');
 
     this.elem.append(this.createArrow('left'));
     this.elem.append(this.createNav(this.categories));
     this.elem.append(this.createArrow('right', true));
-
-    container.append(this.elem);
   }
   createNav(links) {
     const nav = document.createElement('nav');
@@ -44,7 +41,10 @@ export default class RibbonMenu {
       });
 
       if (evt.target.classList.contains('ribbon__item')) {
-        evt.target.dispatchEvent(this.createCustomEvent(evt.target));
+        this.elem.dispatchEvent(new CustomEvent('ribbon-select', {
+          detail: evt.target.dataset.id,
+          bubbles: true
+        }));
         evt.target.classList.add('ribbon__item_active');
       };
     });
@@ -62,7 +62,7 @@ export default class RibbonMenu {
     return arrow;
   }
   move() {
-    const nav = document.querySelector('.ribbon__inner');
+    const nav = this.elem.querySelector('.ribbon__inner');
     const rightArrow = this.elem.querySelector('.ribbon__arrow_right');
     const leftArrow = this.elem.querySelector('.ribbon__arrow_left');    
 
@@ -91,13 +91,5 @@ export default class RibbonMenu {
         leftArrow.removeEventListener('click', () => {});
       }
     });
-  }
-  createCustomEvent(category) {
-    const customEvent = new CustomEvent('ribbon-select', {
-      detail: category.dataset.id,
-      bubles: true,
-    });
-
-    return customEvent;
   }
 }
